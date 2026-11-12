@@ -3,101 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <title>to-do-list</title>
   <style>
-    body{
+    body {
       font-family: Arial;
     }
-    .practice,.js-result {
-      display :grid;
+    .practice, .js-result {
+      display: grid;
       grid-template-columns: 200px 150px 100px;
       column-gap: 15px;
-      row-gap:20px;
-      align-items:center;
+      row-gap: 20px;
+      align-items: center;
     }
-   .to-do1,.date{
+    .to-do1, .date {
       box-shadow: 1px 2px 0.3;
-     font-size: 15px;
-      padding:6px
+      font-size: 15px;
+      padding: 6px;
     }
-
- .add-button,.delete-button{
-    cursor:pointer;
-    padding:8px 10px;
-    color: white;
-    border: none;
-    font-size: 15px;
-    padding: 10px 15px;
-    cursor: pointer;
- }
- .add-button{
-  background-color: green;
- }
- .delete-button{
- background-color: rgb(156, 18, 18);
- }
-
+    .add-button, .delete-button {
+      cursor: pointer;
+      color: white;
+      border: none;
+      font-size: 15px;
+      padding: 10px 15px;
+    }
+    .add-button {
+      background-color: green;
+    }
+    .delete-button {
+      background-color: rgb(156, 18, 18);
+    }
   </style>
 </head>
 <body>
-      <p class="title" style="font-size:30px">Todo List</p>
+  <p class="title" style="font-size:30px">Todo List</p>
   <div class="practice">
-
     <input class="to-do1" type="text" placeholder="Todo name">
     <input class="date" type="date">
-    <button  class="add-button">Add</button>  
+    <button class="add-button">Add</button>
     <div class="js-result"></div>
   </div>
- 
-<a href=" https://sharmataran999-design.github.io/calculator/">
-   
+
   <script>
-    let array1 = [];  
+    // 1. Load existing todos from localStorage, or default to an empty array
+    let array1 = JSON.parse(localStorage.getItem('todoList')) || [];
+
+    // 2. Helper function to save current array to localStorage
+    function saveToStorage() {
+      localStorage.setItem('todoList', JSON.stringify(array1));
+    }
 
     function addit() {
       const name = document.querySelector('.to-do1').value.trim();
       const date = document.querySelector('.date').value;
-      
-      if (!name) return;  
+      if (!name) return;
+
       array1.push({ name: name, date: date });
-      
-      // Clear inputs
+      saveToStorage(); 
+
       document.querySelector('.to-do1').value = '';
       document.querySelector('.date').value = '';
-      
       render();
     }
 
     function render() {
       let scope = '';
-      array1.forEach(
-        (todoobject,index)=>{
-           const todo = array1[index];  
-          scope += `
-          <div>${todo.name} </div>
-            <div>${todo.date}</div>
-            <button class="delete-button">
-              Delete</button>`
-         
-        }
-      )
+      array1.forEach((todoObject) => {
+        scope += `
+          <div>${todoObject.name}</div>
+          <div>${todoObject.date}</div>
+          <button class="delete-button">Delete</button>
+        `;
+      });
 
       document.querySelector('.js-result').innerHTML = scope;
-   
 
-    document.querySelectorAll('.delete-button')
-    .forEach((deletebutton,index)=>{
-      deletebutton.addEventListener('click',()=>{
-        array1.splice(index,1); render();
-      });
-    })
-};//fxn render end
+      document.querySelectorAll('.delete-button')
+        .forEach((deleteButton, index) => {
+          deleteButton.addEventListener('click', () => {
+            array1.splice(index, 1);
+            saveToStorage(); // Save after deleting
+            render();
+          });
+        });
+    }
+
     document.querySelector('.add-button')
-    .addEventListener ('click',()=>{
-      addit()
-    })
+      .addEventListener('click', () => {
+        addit();
+      });
 
+    render();
   </script>
 </body>
 </html>
